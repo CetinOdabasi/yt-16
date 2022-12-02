@@ -75,42 +75,7 @@ def detail_user(request):
     return Response(data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST', ])
-@permission_classes([IsAuthenticated])
-def update_user(request):
-    user = request.user
 
-    first_name = request.data.get('first_name', user.first_name)
-    last_name = request.data.get('last_name', user.last_name)
-
-    country = request.data.get('country', user.profile.country)
-    city = request.data.get('city', user.profile.city)
-    phone_number = request.data.get('phone_number', user.profile.phone_number)
-
-    password = request.data.get('password', None)
-    password2 = request.data.get('password2', None)
-    
-    if password:
-        if not password or password != password2:
-            data = {
-                'error_message': "Password didn't match",
-                'response': 'Error'
-            }
-            return Response(data, status=status.HTTP_400_BAD_REQUEST)
-        user.set_password(password)
-
-    user.first_name = first_name
-    user.last_name = last_name
-    user.save()
-
-    user.profile.country = country
-    user.profile.city = city
-    user.profile.phone_number = phone_number
-    user.profile.save()
-
-    data = UserSerializer(user).data
-    data['profile'] = ProfileSerializer(user.profile).data
-    return Response(data, status=status.HTTP_202_ACCEPTED)
 
 
 
